@@ -19,64 +19,65 @@
         <p class="text-sm sm:text-base text-gray-600 dark:text-gray-300 mt-3">Track, Manage, and Monitor Wool from Farm to Fabric</p>
     </div>
 
-    @if (Route::has('login'))
-        @php
-            $roles = [
-                'admin' => 'Admin',
-                'farmer' => 'Farmer',
-                'processor' => 'Processor',
-                'distributor' => 'Distributor',
-                'retailer' => 'Retailer',
-            ];
-        @endphp
+    @php
+        $roles = [
+            'admin' => 'Admin',
+            'farmer' => 'Farmer',
+            'processor' => 'Processor',
+            'distributor' => 'Distributor',
+            'retailer' => 'Retailer',
+        ];
+    @endphp
 
-        <div class="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-8 flex flex-col gap-6 text-center">
-            <label for="role" class="text-lg font-semibold text-gray-700 dark:text-gray-100">Choose a Role</label>
-            <select id="role" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400">
-                <option value="" disabled selected>Select a role</option>
-                @foreach ($roles as $guard => $label)
-                    <option value="{{ $guard }}">{{ $label }}</option>
-                @endforeach
-            </select>
+    <div class="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-8 flex flex-col gap-6 text-center">
+        <label for="role" class="text-lg font-semibold text-gray-700 dark:text-gray-100">Choose a Role</label>
+        <select id="role" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <option value="" disabled selected>Select a role</option>
+            @foreach ($roles as $guard => $label)
+                <option value="{{ $guard }}">{{ $label }}</option>
+            @endforeach
+        </select>
 
-            <div class="flex flex-col sm:flex-row gap-4 justify-center mt-4">
-                <button onclick="handleRedirect('login')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md w-full sm:w-1/2 transition">
-                    Login
-                </button>
-                <button onclick="handleRedirect('register')" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md w-full sm:w-1/2 transition">
-                    Register
-                </button>
-            </div>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center mt-4">
+            <button onclick="handleRedirect('login')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md w-full sm:w-1/2 transition">
+                Login
+            </button>
+            <button onclick="handleRedirect('register')" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md w-full sm:w-1/2 transition">
+                Register
+            </button>
         </div>
+    </div>
 
-        {{-- JS to handle redirection --}}
-        <script>
-            function handleRedirect(action) {
-                const role = document.getElementById('role').value;
-                if (!role) {
-                    alert("Please select a role first.");
-                    return;
-                }
+    {{-- JS to handle redirection --}}
+    <script>
+    function handleRedirect(action) {
+        const role = document.getElementById('role').value;
+        if (!role) {
+            alert("Please select a role first.");
+            return;
+        }
 
-                // Check if route exists using blade helpers
-                const routes = {
-                    @foreach ($roles as $guard => $label)
-                        "{{ $guard }}_login": "{{ route("$guard.login") }}",
-                        @if (Route::has("$guard.register"))
-                            "{{ $guard }}_register": "{{ route("$guard.register") }}",
-                        @endif
-                    @endforeach
-                };
+        const routes = {
+            @foreach ($roles as $guard => $label)
+                @if (Route::has("$guard.login"))
+                    "{{ $guard }}_login": "{{ route("$guard.login") }}",
+                @endif
+                @if (Route::has("$guard.register"))
+                    "{{ $guard }}_register": "{{ route("$guard.register") }}",
+                @endif
+            @endforeach
+        };
 
-                const key = `${role}_${action}`;
-                if (routes[key]) {
-                    window.location.href = routes[key];
-                } else {
-                    alert("The selected action is not available for this role.");
-                }
-            }
-        </script>
-    @endif
+        console.log(routes); // Debug output
+
+        const key = `${role}_${action}`;
+        if (routes[key]) {
+            window.location.href = routes[key];
+        } else {
+            alert("The selected action is not available for this role.");
+        }
+    }
+</script>
 </main>
 
 </body>
