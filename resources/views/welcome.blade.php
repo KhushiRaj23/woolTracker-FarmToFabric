@@ -11,82 +11,73 @@
     {{-- Tailwind CSS via Vite --}}
     @vite('resources/css/app.css')
 </head>
-<body class="bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18] flex flex-col items-center min-h-screen p-6 lg:p-8 font-sans">
+<body class="min-h-screen bg-gradient-to-tr from-green-200 via-green-600 to-green-300 dark:bg-[#0a0a0a] text-[#1b1b18] font-sans flex flex-col items-center justify-start p-4 sm:p-6">
 
-    <header class="w-full max-w-[335px] lg:max-w-4xl text-sm mb-6">
-        @if (Route::has('login'))
-            <nav class="flex flex-wrap justify-center lg:justify-end gap-4">
-                {{-- Web Auth --}}
-                @auth('web')
-                    <a href="{{ url('/dashboard') }}" class="nav-link">Dashboard</a>
-                @else
-                    <a href="{{ route('login') }}" class="nav-link">Log in</a>
-                    @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="nav-link border">Register</a>
-                    @endif
-                @endauth
-
-                {{-- Admin Auth --}}
-                @auth('admin')
-                    <a href="{{ url('/admin/dashboard') }}" class="nav-link">Admin Dashboard</a>
-                @else
-                    <a href="{{ route('admin.login') }}" class="nav-link">Admin Log in</a>
-                    @if (Route::has('admin.register'))
-                        <a href="{{ route('admin.register') }}" class="nav-link border">Admin Register</a>
-                    @endif
-                @endauth
-
-                {{-- Farmer Auth --}}
-                @auth('farmer')
-                    <a href="{{ url('/farmer/dashboard') }}" class="nav-link">Farmer Dashboard</a>
-                @else
-                    <a href="{{ route('farmer.login') }}" class="nav-link">Farmer Log in</a>
-                    @if (Route::has('farmer.register'))
-                        <a href="{{ route('farmer.register') }}" class="nav-link border">Farmer Register</a>
-                    @endif
-                @endauth
-
-                {{-- Processor Auth --}}
-                @auth('processor')
-                    <a href="{{ url('/processor/dashboard') }}" class="nav-link">Processor Dashboard</a>
-                @else
-                    <a href="{{ route('processor.login') }}" class="nav-link">Processor Log in</a>
-                    @if (Route::has('processor.register'))
-                        <a href="{{ route('processor.register') }}" class="nav-link border">Processor Register</a>
-                    @endif
-                @endauth
-
-                {{-- Distributor Auth --}}
-                @auth('distributor')
-                    <a href="{{ url('/distributor/dashboard') }}" class="nav-link">Distributor Dashboard</a>
-                @else
-                    <a href="{{ route('distributor.login') }}" class="nav-link">Distributor Log in</a>
-                    @if (Route::has('distributor.register'))
-                        <a href="{{ route('distributor.register') }}" class="nav-link border">Distributor Register</a>
-                    @endif
-                @endauth
-
-                {{--Retailer Auth --}}
-                @auth('retailer')
-                    <a href="{{ url('/retailer/dashboard') }}" class="nav-link">Retailer Dashboard</a>
-                @else
-                    <a href="{{ route('retailer.login') }}" class="nav-link">Retailer Log in</a>
-                    @if (Route::has('retailer.register'))
-                        <a href="{{ route('retailer.register') }}" class="nav-link border">Retailer Register</a>
-                    @endif
-                @endauth
-            </nav>
-        @endif
-    </header>
-
-    <main class="text-center mt-12">
-        <h1 class="text-2xl font-bold text-[#1b1b18] dark:text-[#EDEDEC]">Welcome to the Wool Journey App</h1>
-        <p class="text-sm text-gray-600 dark:text-gray-300 mt-2">Track, Manage, and Monitor Wool from Farm to Fabric</p>
-    </main>
+<main class="w-full max-w-xl mt-16">
+    <div class="text-center mb-10">
+        <h1 class="text-3xl sm:text-4xl font-bold text-[#1b1b18] dark:text-[#EDEDEC]">Welcome to the Wool Journey App</h1>
+        <p class="text-sm sm:text-base text-gray-600 dark:text-gray-300 mt-3">Track, Manage, and Monitor Wool from Farm to Fabric</p>
+    </div>
 
     @if (Route::has('login'))
-        <div class="hidden h-[3.625rem] lg:block"></div>
+        @php
+            $roles = [
+                'admin' => 'Admin',
+                'farmer' => 'Farmer',
+                'processor' => 'Processor',
+                'distributor' => 'Distributor',
+                'retailer' => 'Retailer',
+            ];
+        @endphp
+
+        <div class="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-8 flex flex-col gap-6 text-center">
+            <label for="role" class="text-lg font-semibold text-gray-700 dark:text-gray-100">Choose a Role</label>
+            <select id="role" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400">
+                <option value="" disabled selected>Select a role</option>
+                @foreach ($roles as $guard => $label)
+                    <option value="{{ $guard }}">{{ $label }}</option>
+                @endforeach
+            </select>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center mt-4">
+                <button onclick="handleRedirect('login')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md w-full sm:w-1/2 transition">
+                    Login
+                </button>
+                <button onclick="handleRedirect('register')" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md w-full sm:w-1/2 transition">
+                    Register
+                </button>
+            </div>
+        </div>
+
+        {{-- JS to handle redirection --}}
+        <script>
+            function handleRedirect(action) {
+                const role = document.getElementById('role').value;
+                if (!role) {
+                    alert("Please select a role first.");
+                    return;
+                }
+
+                // Check if route exists using blade helpers
+                const routes = {
+                    @foreach ($roles as $guard => $label)
+                        "{{ $guard }}_login": "{{ route("$guard.login") }}",
+                        @if (Route::has("$guard.register"))
+                            "{{ $guard }}_register": "{{ route("$guard.register") }}",
+                        @endif
+                    @endforeach
+                };
+
+                const key = `${role}_${action}`;
+                if (routes[key]) {
+                    window.location.href = routes[key];
+                } else {
+                    alert("The selected action is not available for this role.");
+                }
+            }
+        </script>
     @endif
+</main>
 
 </body>
 </html>
