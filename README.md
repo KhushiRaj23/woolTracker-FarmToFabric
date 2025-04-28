@@ -87,6 +87,15 @@
 
 ---
 
+## 💻 Screenshot
+
+![image](https://github.com/user-attachments/assets/feb764a5-94c7-464f-8d0b-78d937d57aec)
+![image](https://github.com/user-attachments/assets/b18442ce-0777-4994-8bb2-ba2ea1f98dff)
+![image](https://github.com/user-attachments/assets/92b25068-007d-4390-b2e2-b3794eca414e)
+
+
+---
+
 ## 🚀 Usage
 
 - Register as a specific user (Farmer, Processor, Distributor, Retailer).
