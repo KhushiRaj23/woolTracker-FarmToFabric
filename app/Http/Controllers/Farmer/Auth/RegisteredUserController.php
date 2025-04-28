@@ -34,17 +34,29 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.Farmer::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'phone' => ['nullable', 'string', 'max:20'],
+            'address' => ['required', 'string', 'max:255'],
+            'city' => ['required', 'string', 'max:255'],
+            'state' => ['required', 'string', 'max:255'],
+            'postal_code' => ['required', 'string', 'max:20'],
+            'country' => ['required', 'string', 'max:255'],
         ]);
 
-        $Farmer = Farmer::create([
+        $farmer = Farmer::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'city' => $request->city,
+            'state' => $request->state,
+            'postal_code' => $request->postal_code,
+            'country' => $request->country,
         ]);
 
-        event(new Registered($Farmer));
+        event(new Registered($farmer));
 
-        Auth::guard('farmer')->login($Farmer);
+        Auth::guard('farmer')->login($farmer);
 
         return redirect(route('farmer.dashboard', absolute: false));
     }

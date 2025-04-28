@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\HttpFoundation\Response;
+use App\Providers\RouteServiceProvider;
 
 class RedirectIfAuthenticated
 {
@@ -28,7 +29,22 @@ class RedirectIfAuthenticated
         
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                return redirect($this->redirectTo($request));
+                if ($guard === 'admin') {
+                    return redirect()->route('admin.dashboard');
+                }
+                if ($guard === 'farmer') {
+                    return redirect()->route('farmer.dashboard');
+                }
+                if ($guard === 'processor') {
+                    return redirect()->route('processor.dashboard');
+                }
+                if ($guard === 'distributor') {
+                    return redirect()->route('distributor.dashboard');
+                }
+                if ($guard === 'retailer') {
+                    return redirect()->route('retailer.dashboard');
+                }
+                return redirect(RouteServiceProvider::HOME);
             }
         }
 

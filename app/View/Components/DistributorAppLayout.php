@@ -12,6 +12,6 @@ class DistributorAppLayout extends Component
      */
     public function render(): View
     {
-        return view('Distributor.layouts.app');
+        return view('distributor.layouts.app');
     }
 }

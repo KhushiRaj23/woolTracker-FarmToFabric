@@ -19,18 +19,33 @@
             @include('layouts.navigation')
 
             <!-- Page Heading -->
-            @isset($header)
+            @if(isset($header))
                 <header class="bg-white shadow">
                     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
+                        {!! $header !!}
                     </div>
                 </header>
-            @endisset
+            @else
+                @hasSection('header')
+                    <header class="bg-white shadow">
+                        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                            @yield('header')
+                        </div>
+                    </header>
+                @endif
+            @endif
 
             <!-- Page Content -->
             <main>
-                {{ $slot }}
+                @hasSection('content')
+                    @yield('content')
+                @else
+                    {{ $slot ?? '' }}
+                @endif
             </main>
         </div>
+
+        <!-- Stack for additional scripts -->
+        @stack('scripts')
     </body>
 </html>

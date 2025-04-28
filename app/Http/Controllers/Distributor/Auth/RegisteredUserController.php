@@ -33,19 +33,19 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.Processor::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.Distributor::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $Distributor = Distributor::create([
+        $distributor = Distributor::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
 
-        event(new Registered($Distributor));
+        event(new Registered($distributor));
 
-        Auth::guard('distributor')->login($Distributor);
+        Auth::guard('distributor')->login($distributor);
 
         return redirect(route('distributor.dashboard', absolute: false));
     }

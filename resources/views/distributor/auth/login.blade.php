@@ -1,4 +1,4 @@
-<x-guest-layout>
+<x-distributor-guest-layout>
     <!-- Session Status -->
 
     <h2 class="font-semibold text-xl text-gray-800 text-center leading-tight ">
@@ -50,4 +50,4 @@
             </x-primary-button>
         </div>
     </form>
-</x-guest-layout>
+</x-distributor-guest-layout>

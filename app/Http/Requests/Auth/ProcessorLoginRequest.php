@@ -41,9 +41,17 @@ class ProcessorLoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::guard('processor')->attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
+            throw ValidationException::withMessages([
+                'email' => trans('auth.failed'),
+            ]);
+        }
+
+        $user = Auth::user();
+        if ($user->role !== 'processor') {
+            Auth::logout();
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
             ]);
@@ -80,6 +88,6 @@ class ProcessorLoginRequest extends FormRequest
      */
     public function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
+        return Str::transliterate(Str::lower($this->input('email')).'|'.$this->ip());
     }
 }

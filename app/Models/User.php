@@ -2,15 +2,16 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
     protected $guard='web';
     /**
      * The attributes that are mass assignable.
@@ -21,6 +22,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'is_active',
     ];
 
     /**
@@ -38,11 +41,57 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
-    protected function casts(): array
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'is_active' => 'boolean',
+    ];
+
+    public function processor()
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->hasOne(Processor::class);
+    }
+
+    public function isProcessor()
+    {
+        return $this->role === 'processor';
+    }
+
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isFarmer()
+    {
+        return $this->role === 'farmer';
+    }
+
+    public function isDistributor()
+    {
+        return $this->role === 'distributor';
+    }
+
+    public function isRetailer()
+    {
+        return $this->role === 'retailer';
+    }
+
+    public function hasRole($role)
+    {
+        switch ($role) {
+            case 'admin':
+                return $this->isAdmin();
+            case 'processor':
+                return $this->isProcessor();
+            case 'farmer':
+                return $this->isFarmer();
+            case 'distributor':
+                return $this->isDistributor();
+            case 'retailer':
+                return $this->isRetailer();
+            default:
+                return false;
+        }
     }
 }

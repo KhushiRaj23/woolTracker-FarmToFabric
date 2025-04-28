@@ -21,6 +21,13 @@ class Retailer extends Authenticatable
         'name',
         'email',
         'password',
+        'phone',
+        'address',
+        'city',
+        'state',
+        'postal_code',
+        'country',
+        'status'
     ];
 
     /**

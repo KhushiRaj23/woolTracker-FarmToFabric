@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Processor\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ProcessorLoginRequest;
-use App\Models\Processor;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,7 +28,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('processor.dashboard', absolute: false));
+        return redirect()->route('processor.dashboard');
     }
 
     /**
@@ -37,7 +36,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        Auth::guard('processor')->logout();
+        Auth::logout();
 
         $request->session()->invalidate();
 

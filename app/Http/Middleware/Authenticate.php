@@ -115,27 +115,33 @@ class Authenticate implements AuthenticatesRequests
      */
     protected function redirectTo(Request $request)
     {
-
-        if($request->routeIs('farmer.dashboard')){
-            return route('farmer.login');
-        }
-
-        if($request->routeIs('admin.dashboard')){
-            return route('admin.login');
-        }
-        if($request->routeIs('processor.dashboard')){
-            return route('processor.login');
-        }
-        if($request->routeIs('distributor.dashboard')){
-            return route('distributor.login');
-        }
-        if($request->routeIs('retailer.dashboard')){
-            return route('retailer.login');
+        if (!$request->expectsJson()) {
+            if (str_starts_with($request->path(), 'farmer')) {
+                return route('farmer.login');
+            }
+            
+            if (str_starts_with($request->path(), 'admin')) {
+                return route('admin.login');
+            }
+            
+            if (str_starts_with($request->path(), 'processor')) {
+                return route('processor.login');
+            }
+            
+            if (str_starts_with($request->path(), 'distributor')) {
+                return route('distributor.login');
+            }
+            
+            if (str_starts_with($request->path(), 'retailer')) {
+                return route('retailer.login');
+            }
         }
 
         if (static::$redirectToCallback) {
             return call_user_func(static::$redirectToCallback, $request);
         }
+
+        return route('login');
     }
 
     /**

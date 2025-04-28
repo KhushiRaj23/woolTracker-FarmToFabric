@@ -13,10 +13,27 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <style>
+            .nav-link {
+                padding: 0.5rem 1rem;
+                color: #374151;
+                border-radius: 0.375rem;
+                font-weight: 500;
+                transition: background 0.2s, color 0.2s;
+                text-decoration: none;
+            }
+            .nav-link:hover, .nav-link.active {
+                background: #6366f1;
+                color: #fff;
+            }
+        </style>
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
+            <!-- Distributor Top Navigation -->
             @include('distributor.layouts.navigation')
+            <!-- End Distributor Top Navigation -->
 
             <!-- Page Heading -->
             @isset($header)

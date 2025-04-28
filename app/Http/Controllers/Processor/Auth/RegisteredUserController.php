@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Processor\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Processor;
+use App\Models\User;
 
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -32,19 +33,34 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.Processor::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'company_name' => ['required', 'string', 'max:255'],
+            'address' => ['required', 'string'],
+            'phone' => ['required', 'string', 'max:20'],
+            'capacity' => ['required', 'integer', 'min:1'],
+            'specialization' => ['required', 'string', 'max:255'],
         ]);
 
-        $Processor = Processor::create([
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role' => 'processor',
         ]);
 
-        event(new Registered($Processor));
+        $processor = Processor::create([
+            'user_id' => $user->id,
+            'company_name' => $request->company_name,
+            'address' => $request->address,
+            'phone' => $request->phone,
+            'capacity' => $request->capacity,
+            'specialization' => $request->specialization,
+        ]);
 
-        Auth::guard('processor')->login($Processor);
+        event(new Registered($user));
+
+        Auth::login($user);
 
         return redirect(route('processor.dashboard', absolute: false));
     }
